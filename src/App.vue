@@ -3,11 +3,11 @@ import TopPage from './components/top/TopPage.vue'
 </script>
 
 <template>
-  <header>
+  <!-- <header> -->
     <div class="wrapper">
       <TopPage />
     </div>
-  </header>
+  <!-- </header> -->
 
   <main>
     <TheWelcome />
@@ -15,16 +15,16 @@ import TopPage from './components/top/TopPage.vue'
 </template>
 
 <style scoped>
-header {
+/* header {
   line-height: 1.5;
 }
 
 .logo {
   display: block;
   margin: 0 auto 2rem;
-}
+} */
 
-@media (min-width: 1024px) {
+/* @media (min-width: 1024px) {
   header {
     display: flex;
     place-items: center;
@@ -40,5 +40,5 @@ header {
     place-items: flex-start;
     flex-wrap: wrap;
   }
-}
+} */
 </style>
