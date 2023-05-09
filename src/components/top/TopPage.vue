@@ -11,7 +11,6 @@ const error_message = ref("")
 
 const getImage = (e) => {
   error_message.value = "";
-
   if ((!isMobile.value && e.clipboardData.types[0] === 'Files') || isMobile.value && e.target.files.length > 0) {
     let pastedImage = null;
     if (!isMobile.value) {
@@ -31,9 +30,12 @@ const getImage = (e) => {
     fd.append("MAX_FILE_SIZE", 10485760);
     fd.append("upload_file", pastedImage);
 
+    alert("post!前");
     similar_img.value = []
     axios.post(`${import.meta.env.VITE_APP_API_BASE_URL}${select.value}`, fd
     ).then((response) => {
+      alert("post!");
+
       const coordinates = response.data.coordinates;
       for (let place of coordinates) {
         coordinatesList.value.push(place[0])
@@ -43,7 +45,7 @@ const getImage = (e) => {
         similar_img.value.push("data:image/*;base64," + image)
       }
     }).catch((error) => {
-      error_message.value = error.response.data.error_message || error.message;  
+      error_message.value = error.response.data.error_message || error.message;
     })
   }
 }
@@ -57,8 +59,9 @@ isMobile.value = regex.test(navigator.userAgent);
 <template>
   <div>
     <div class="summary">
-      <h1>地図から宝箱を探す</h1>
+      <h1>地図座標を探す | Treasure hunt</h1>
       <ol v-if="isMobile">
+        <li>ファイルを選択をタップする</li>
         <li>画像を撮影する</li>
       </ol>
       <ol v-else>

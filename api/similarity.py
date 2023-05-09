@@ -39,7 +39,7 @@ def compare_image_hash(input_image_hash, image_hash):
 @app.post("/ff14_map_treasure_uploadfile/{select}")
 async def upload_file(upload_file: UploadFile, select: str):
     upload_file.file.seek(0, 2)
-    if upload_file.file.tell() > 1:
+    if upload_file.file.tell() > 10485760:
         return JSONResponse(content={"error_message": "ファイルサイズは10Mbまでアップロードできます。"}, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     # if ("image/" not in upload_file.content_type) or (upload_file.content_type != "application/octet-stream"):
@@ -65,10 +65,10 @@ async def upload_file(upload_file: UploadFile, select: str):
             place = json.load(f)
 
         # 昇順並び替え及び小さい値2個取得
-        sorted_diff_dict = sorted(diff_dict.items(), key=lambda x:x[1])
+        sorted_diff_dict = sorted(diff_dict.items(), key=lambda x: x[1])
         sorted_diff_dict = sorted_diff_dict[0:2]
-        sorted_diff_dict = dict((x, y) for x, y in sorted_diff_dict) 
-        
+        sorted_diff_dict = dict((x, y) for x, y in sorted_diff_dict)
+
         image_base64 = []
         for name in sorted_diff_dict.keys():
             if name is None:
