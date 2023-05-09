@@ -46,10 +46,12 @@ async def upload_file(upload_file: UploadFile, select: str):
     
     image = Image.open(upload_file.file)
     bg = Image.new("RGB", image.size, image.getpixel((0, 0)))
-    diff = ImageChops.difference(image, bg)
-    croprange = diff.convert("RGB").getbbox()
-    crop_img = image.crop(croprange)
-    crop_img.show()
+    if image.mode == bg.mode:
+        diff = ImageChops.difference(image, bg)
+        croprange = diff.convert("RGB").getbbox()
+        crop_img = image.crop(croprange)
+    else:
+        crop_img = image
     
     input_image_hash = imagehash.average_hash(crop_img)
 
