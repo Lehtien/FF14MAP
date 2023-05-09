@@ -4,7 +4,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from pillow_heif import register_heif_opener
-from PIL import Image
+from PIL import Image, ImageChops
 import imagehash
 import json
 import base64
@@ -34,7 +34,6 @@ def compare_image_hash(input_image_hash, image_hash):
 
 @app.post("/ff14_map_treasure_uploadfile/{select}")
 async def upload_file(upload_file: UploadFile, select: str):
-    print("---posted success---")
     upload_file.file.seek(0, 2)
     if upload_file.file.tell() > 10485760:
         return JSONResponse(content={"error_message": "ファイルサイズは10Mbまでアップロードできます。"}, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
@@ -44,7 +43,15 @@ async def upload_file(upload_file: UploadFile, select: str):
     #         return JSONResponse(content={"error_message": "画像のみアップロードできます。"}, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
     register_heif_opener()
-    input_image_hash = imagehash.average_hash(Image.open(upload_file.file))
+    
+    image = Image.open(upload_file.file)
+    bg = Image.new("RGB", image.size, image.getpixel((0, 0)))
+    diff = ImageChops.difference(image, bg)
+    croprange = diff.convert("RGB").getbbox()
+    crop_img = image.crop(croprange)
+    crop_img.show()
+    
+    input_image_hash = imagehash.average_hash(crop_img)
 
     with open(f"map_hash/image_hash_{select}.json", "r", encoding="utf-8") as f:
         image_hash_list = json.load(f)
