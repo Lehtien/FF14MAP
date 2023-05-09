@@ -7,11 +7,7 @@ from pillow_heif import register_heif_opener
 from PIL import Image
 import imagehash
 import json
-import mimetypes
 import base64
-
-import requests
-import io
 import re
 
 from concurrent.futures import ProcessPoolExecutor
@@ -38,6 +34,7 @@ def compare_image_hash(input_image_hash, image_hash):
 
 @app.post("/ff14_map_treasure_uploadfile/{select}")
 async def upload_file(upload_file: UploadFile, select: str):
+    print("---posted success---")
     upload_file.file.seek(0, 2)
     if upload_file.file.tell() > 10485760:
         return JSONResponse(content={"error_message": "ファイルサイズは10Mbまでアップロードできます。"}, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)

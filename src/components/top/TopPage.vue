@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import axios from 'axios'
+import axios from 'axios';
+import ImageUtil from "../../imageResize";
 
 const paste_img = ref(null)       //  貼り付けられた画像
 const imageSelected = ref(false)  //  画像が選択されたかどうか
@@ -18,6 +19,10 @@ const getImage = (e) => {
     } else {
       pastedImage = e.target.files[0]
     }
+
+    const compFile = ImageUtil.getCompressImageFileAsync(pastedImage)
+    compFile.then((data)=> {
+      pastedImage = data;
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -44,6 +49,7 @@ const getImage = (e) => {
     }).catch((error) => {
       error_message.value = error.response.data.error_message || error.message;
     })
+  })
   }
 }
 
@@ -103,7 +109,6 @@ isMobile.value = regex.test(navigator.userAgent);
             Y: {{ coordinatesList[index / 2]["Y"].toFixed(1) }}
           </p>
         </div>
-
       </picture>
     </div>
   </div>
@@ -158,11 +163,13 @@ isMobile.value = regex.test(navigator.userAgent);
   .paste_area {
     width: 100%;
     height: 220px;
+
     img {
       max-width: 80%;
       max-height: 75%;
     }
   }
+
   .similar_images {
     grid-template-columns: 1fr;
 
@@ -176,25 +183,26 @@ isMobile.value = regex.test(navigator.userAgent);
 
     picture {
       margin-bottom: 0;
+
       span {
         display: block;
       }
     }
   }
 }
-  .summary {
-    margin-bottom: 2em;
-  }
 
-  .map_icon {
-    width: 1.1em;
-    fill: white;
-    margin: 0 0.1em 0 0.5em;
-  }
+.summary {
+  margin-bottom: 2em;
+}
 
-  .error_message {
-    color: red;
-    position: absolute;
-    top: 1em;
-  }
-</style>
+.map_icon {
+  width: 1.1em;
+  fill: white;
+  margin: 0 0.1em 0 0.5em;
+}
+
+.error_message {
+  color: red;
+  position: absolute;
+  top: 1em;
+}</style>
