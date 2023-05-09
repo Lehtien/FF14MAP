@@ -62,7 +62,7 @@ isMobile.value = regex.test(navigator.userAgent);
 <template>
   <div>
     <div class="summary">
-      <h1>地図座標を探す | Treasure hunt</h1>
+      <h1>【FF14】地図座標を探す | Treasure hunt</h1>
       <ol v-if="isMobile">
         <li>ファイルを選択をタップする</li>
         <li>画像を撮影する</li>
