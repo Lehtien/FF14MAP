@@ -97,6 +97,7 @@ isMobile.value = regex.test(navigator.userAgent);
     <div v-else contenteditable @paste.prevent="getImage" class="paste_area">
       <img :src=paste_img ref="paste_img" alt v-if="imageSelected" />
     </div>
+    <p>(C) SQUARE ENIX CO., LTD. All Rights Reserved.</p>
     <div class="similar_images">
       <p class="error_message" v-if="error_message !== ''">{{ error_message }}</p>
       <picture v-for="(img_src, index) in similar_img" :key="img_src">
