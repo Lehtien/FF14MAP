@@ -30,12 +30,9 @@ const getImage = (e) => {
     fd.append("MAX_FILE_SIZE", 10485760);
     fd.append("upload_file", pastedImage);
 
-    alert("post!前");
     similar_img.value = []
     axios.post(`${import.meta.env.VITE_APP_API_BASE_URL}${select.value}`, fd
     ).then((response) => {
-      alert("post!");
-
       const coordinates = response.data.coordinates;
       for (let place of coordinates) {
         coordinatesList.value.push(place[0])
