@@ -53,7 +53,7 @@ async def upload_file(upload_file: UploadFile, select: str):
     else:
         crop_img = image
     
-    input_image_hash = imagehash.average_hash(crop_img)
+    input_image_hash = imagehash.phash(crop_img)
 
     with open(f"map_hash/image_hash_{select}.json", "r", encoding="utf-8") as f:
         image_hash_list = json.load(f)
