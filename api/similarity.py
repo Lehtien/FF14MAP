@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, status, Request, Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from typing import Union
 
 from pillow_heif import register_heif_opener
 from PIL import Image, ImageChops
@@ -32,8 +33,8 @@ def compare_image_hash(input_image_hash, image_hash):
     return input_image_hash - imagehash.hex_to_hash(image_hash)
 
 
-@app.post("/ff14_map_treasure_uploadfile/{select}")
-async def upload_file(upload_file: UploadFile, select: str):
+@app.post("/ff14_map_treasure_uploadfile/{selected_map}")
+async def upload_file(upload_file: UploadFile, selected_map: str, selected_area: Union[str, None] = None):
     upload_file.file.seek(0, 2)
     if upload_file.file.tell() > 10485760:
         return JSONResponse(content={"error_message": "ファイルサイズは10Mbまでアップロードできます。"}, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
@@ -55,19 +56,27 @@ async def upload_file(upload_file: UploadFile, select: str):
     
     input_image_hash = imagehash.phash(crop_img)
 
-    with open(f"map_hash/image_hash_{select}.json", "r", encoding="utf-8") as f:
+    filtered_image_hash_list = []
+    with open(f"map_hash/image_hash_{selected_map}.json", "r", encoding="utf-8") as f:
         image_hash_list = json.load(f)
-
+        
+        if selected_area != None:
+            for image_hash in image_hash_list:
+                if selected_area in image_hash["name"]:
+                    filtered_image_hash_list.append(image_hash)
+        else:
+            filtered_image_hash_list = image_hash_list                   
+        
     diff_dict = {}
     with ProcessPoolExecutor(max_workers=4) as executor:
-        for image_hash in image_hash_list:
+        for image_hash in filtered_image_hash_list:
             future = executor.submit(compare_image_hash, input_image_hash, image_hash["hash"])
             diff_dict[image_hash["name"]] = future.result()
         executor.shutdown()
 
         # 座標JSON取得
         coordinates = []
-        with open(f"map_place/map_place_{select}.json", "rb") as f:
+        with open(f"map_place/map_place_{selected_map}.json", "rb") as f:
             place = json.load(f)
 
         # 昇順並び替え及び小さい値2個取得
@@ -80,13 +89,13 @@ async def upload_file(upload_file: UploadFile, select: str):
             if name is None:
                 continue
 
-            with open(f"map_image/{select}/{name}", "rb") as image_file:
+            with open(f"map_image/{selected_map}/{name}", "rb") as image_file:
                 data = base64.b64encode(image_file.read()).decode("utf-8")
                 image_base64.append(data)
 
             #  全体図
             whole_image_name = re.sub("\d", "", name)
-            with open(f"map_image/{select}/{whole_image_name}", "rb") as image_file:
+            with open(f"map_image/{selected_map}/{whole_image_name}", "rb") as image_file:
                 data = base64.b64encode(image_file.read()).decode("utf-8")
                 image_base64.append(data)
 
