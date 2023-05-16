@@ -38,13 +38,13 @@ const getImage = (e) => {
       fd.append("upload_file", pastedImage);
 
       similar_img.value = []
+      coordinatesList.value = [];
       let url = `${import.meta.env.VITE_APP_API_BASE_URL}${selected_map.value}`;
       if (selected_area.value !== null) {
         url += `?selected_area=${selected_area.value}`;
       }
       axios.post(url, fd
       ).then((response) => {
-        coordinatesList.value = [];
         const coordinates = response.data.coordinates;
         for (let place of coordinates) {
           coordinatesList.value.push(place[0])
