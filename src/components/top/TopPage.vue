@@ -3,7 +3,7 @@ import { ref, computed } from 'vue';
 import axios from 'axios';
 import ImageUtil from "../../imageResize";
 
-const map_list = ref(['G15', 'G14'])
+const map_list = ref(['G15', 'G14', 'G12'])
 const paste_img = ref(null)       //  貼り付けられた画像
 const imageSelected = ref(false)  //  画像が選択されたかどうか
 const coordinatesList = ref([])
@@ -44,6 +44,7 @@ const getImage = (e) => {
       }
       axios.post(url, fd
       ).then((response) => {
+        coordinatesList.value = [];
         const coordinates = response.data.coordinates;
         for (let place of coordinates) {
           coordinatesList.value.push(place[0])
@@ -64,7 +65,9 @@ const area_select = computed(() => {
     case 'G15':
       return [{"jp": "エルピス", "en": "Elpis"}];
     case 'G14':
-      return [{"jp": "ガレマルド", "en": "Garlemald"}, {"jp": "ラヴィリンソス", "en": "Labyrinthos"}, {"jp": "嘆きの海", "en": "MareLamentorum"}, {"jp": "サベネア島", "en": "Thavnair"}, {"jp": "ウルティマトゥーレ", "en": "UltimaThule"}]
+      return [{"jp": "ガレマルド", "en": "Garlemald"}, {"jp": "ラヴィリンソス", "en": "Labyrinthos"}, {"jp": "嘆きの海", "en": "MareLamentorum"}, {"jp": "サベネア島", "en": "Thavnair"}, {"jp": "ウルティマトゥーレ", "en": "UltimaThule"}];
+    case 'G12':
+      return [{"jp": "レイクランド", "en": "Lakeland"}, {"jp": "コルシア島", "en": "Kholusia"}, {"jp": "アムアレーン", "en": "AmhAraeng"}, {"jp": "イルメグ", "en": "IlMheg"}, {"jp": "ラケティカ森林", "en": "theRakTikaGreatwood"}, {"jp": "テンペスト", "en": "theTempest"}]
     default:
       return []
   }
@@ -98,22 +101,6 @@ isMobile.value = regex.test(navigator.userAgent);
       <select name="area_select" id="area_select" v-model="selected_area">
         <option v-for="area in area_select" :key="area['jp']" :value="area['en']">{{ area["jp"] }}</option>
       </select>
-      <!-- <input type="radio" v-model="select" value="G15" id="G15">
-      <label for="G15">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="map_icon">
-          <path
-            d="M565.6 36.2C572.1 40.7 576 48.1 576 56V392c0 10-6.2 18.9-15.5 22.4l-168 64c-5.2 2-10.9 2.1-16.1 .3L192.5 417.5l-160 61c-7.4 2.8-15.7 1.8-22.2-2.7S0 463.9 0 456V120c0-10 6.1-18.9 15.5-22.4l168-64c5.2-2 10.9-2.1 16.1-.3L383.5 94.5l160-61c7.4-2.8 15.7-1.8 22.2 2.7zM48 136.5V421.2l120-45.7V90.8L48 136.5zM360 422.7V137.3l-144-48V374.7l144 48zm48-1.5l120-45.7V90.8L408 136.5V421.2z" />
-        </svg>
-        G15
-      </label>
-      <input type="radio" v-model="select" value="G14" id="G14">
-      <label for="G14">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="map_icon">
-          <path
-            d="M565.6 36.2C572.1 40.7 576 48.1 576 56V392c0 10-6.2 18.9-15.5 22.4l-168 64c-5.2 2-10.9 2.1-16.1 .3L192.5 417.5l-160 61c-7.4 2.8-15.7 1.8-22.2-2.7S0 463.9 0 456V120c0-10 6.1-18.9 15.5-22.4l168-64c5.2-2 10.9-2.1 16.1-.3L383.5 94.5l160-61c7.4-2.8 15.7-1.8 22.2 2.7zM48 136.5V421.2l120-45.7V90.8L48 136.5zM360 422.7V137.3l-144-48V374.7l144 48zm48-1.5l120-45.7V90.8L408 136.5V421.2z" />
-        </svg>
-        G14
-      </label> -->
     </div>
     <div v-if="isMobile" class="paste_area">
       <input type="file" id="environment" capture="environment" accept="image/*" @change="getImage">

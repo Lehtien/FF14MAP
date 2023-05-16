@@ -14,7 +14,7 @@ import re
 from concurrent.futures import ProcessPoolExecutor
 
 app = FastAPI()
-origins = ["https://ff14treasurhunt.netlify.app"]
+origins = ["https://ff14treasurhunt.netlify.app", "https://ff14treasurhunt.com", "https://www.ff14treasurhunt.com", "http://localhost:5173"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

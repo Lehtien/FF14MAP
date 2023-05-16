@@ -6,8 +6,10 @@ from concurrent.futures import ProcessPoolExecutor
 
 map_name = "G15"
 image_dir = f"map_image/{map_name}/"
-# image_name_list = ["Garlemald", "Labyrinthos", "MareLamentorum", "Thavnair", "UltimaThule"]
+
 image_name_list = ["Elpis"]
+# image_name_list = ["Garlemald", "Labyrinthos", "MareLamentorum", "Thavnair", "UltimaThule"]
+# image_name_list = ["Lakeland", "Kholusia", "AmhAraeng", "IlMheg", "theRakTikaGreatwood", "theTempest"]
 
 # image_hashの取得
 def get_image_hash(image_path):
